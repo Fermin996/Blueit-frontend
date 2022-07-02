@@ -1,0 +1,36 @@
+.create-post-page{
+    height: 95vh;
+    width: 100vw;
+    background-color: #DAE0E6;
+    display: flex;
+    flex-direction: row;
+}
+
+.create-post-div{
+    width: 50%;
+    margin: 0 auto;
+}
+
+.create-post-head{
+    font-size: 18px;
+    text-align: left;
+}
+
+.create-post-form{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.create-post-form textarea{
+    height: 300px;
+}
+
+.text-done-btn{
+    border: 1px solid black;
+    width: 10%;
+}
+
+.cascader-holder{
+    margin-top:15px;
+}

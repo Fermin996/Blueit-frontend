@@ -1,0 +1,37 @@
+.login-back{
+    background-color: #DAE0E6;
+    width: 100vw;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-div{
+    height: 80%;
+    width: 60%;
+    background-color: white;
+    border: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 4px;
+}   
+
+.login-div img{
+    height: 100%;
+    object-fit: cover;
+}
+
+.login-container{
+    padding-top:20%;
+}
+
+.log-form{
+    display: flex;
+    flex-direction: column;
+}
+
+.space{
+    width: 10%;
+    height: 100%;
+}

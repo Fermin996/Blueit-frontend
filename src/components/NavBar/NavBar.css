@@ -1,0 +1,109 @@
+
+.nav-div{
+    position: fixed;
+    width:100%;
+    border: 1px solid black;
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+}
+
+.logo-div{
+    font-size: 30px;
+    margin-left: 20px;
+    text-decoration: none;
+    color: black;
+}
+
+.search-form{
+    display: flex;
+    flex-direction: row;
+    width:50%;
+    border: 1px solid black;
+    border-radius: 100px;
+    height:35px;
+}
+
+.search-button{
+    background: transparent;
+    border:none;
+    outline: none;
+    margin-left: -33px;
+}
+
+.search-button img{
+    width:16px;
+    height:16px;
+    object-fit: cover;
+}
+
+.search-input{
+    width: 100%;
+    padding: 10px 35px 10px 15px;
+    border-radius: 100px;
+    border: none;
+    font-size: 18px;
+}   
+
+.nav-buttons{
+    display: flex; 
+    height: 40px;
+    margin-right: 10px;
+}
+
+
+.nav-button-login{
+    background-color: aquamarine;
+    /*width: 30%;
+    font-size: 19px;
+    padding-top: 15px;
+    cursor: pointer; */
+    width: 120px;
+    height: 30px;
+    font-size: 19px;
+    border-radius: 20px;
+    /* padding: 5px 5px; */
+    text-decoration: none;
+    color: black;
+    transition: none;
+    margin-right:5px;
+    margin-top:5px;
+}
+
+.nav-button-signup{
+    /* border: 1px solid aquamarine;
+    border-radius: 20px;
+    width:40%;
+    padding: 5px, 20px;
+    height:50%; */
+    width: 120px;
+    height: 30px;
+    font-size: 19px;
+    border-radius: 20px;
+    border: 1px solid aquamarine;
+    text-decoration: none;
+    color: black;
+    transition: none;
+    padding-bottom:5px;
+    margin-top:5px;
+    margin-right:5px;
+}
+
+.nav-button-signup:hover{
+    color: black;
+}
+
+.nav-button-login:hover{
+    color: black;
+}
+
+.nav-button-text{
+    background-color: red;
+}
+
+.logout-btn{
+    margin-right: 20px;    
+}

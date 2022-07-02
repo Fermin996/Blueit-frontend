@@ -1,0 +1,67 @@
+.sub-card-div{
+    width: 30%;
+    margin: 30px;
+}   
+
+.sub-card-top{
+    background-color: #0179D2;
+    height: 30px;
+    color: white;
+    padding-top:5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.sub-info-card{
+    border: 1px solid #c7c8ca;
+    border-radius: 4px;
+    background-color: white;
+    margin-top:10px;
+}
+
+.sub-card-title{
+    font-weight: 700;
+    font-size: 16px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* .sub-card-title p{
+    
+} */
+
+.sub-info-div{
+    padding: 0px 15px 10px 015px;
+}
+
+.sub-count-div{
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.sub-cake-div{
+    margin: 10px;
+    border-top: 2px solid #c7c8ca89;
+    border-bottom: 2px solid #c7c8ca7e;
+    padding: 10px;
+}
+
+.sub-rules-div{
+    border: 1px solid #c7c8ca;
+    background-color: white;
+    border-radius: 4px;
+    margin-top:20px;
+}
+
+.sub-rule{
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px;
+    border-bottom: 2px solid #c7c8ca7e;
+    width: 80%;
+    margin: 0 auto;
+}
+
+

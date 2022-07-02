@@ -1,10 +1,11 @@
 .App {
   text-align: center;
+  font-family:"Noto Sans", Arial, serif; 
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+textarea{  
+   font-family:"Noto Sans", Arial, serif;  
+   font-size: 15px;   
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -35,4 +36,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.nav-buffer{
+  height: 45px;
 }

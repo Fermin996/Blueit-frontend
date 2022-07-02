@@ -1,0 +1,43 @@
+
+
+.comment-div{
+    margin: 20px;
+    padding: 10px;
+    border-left: 3px solid black;
+    width: 100%;
+}
+
+.comment-user{
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.comment-text{
+    text-align: left;
+    margin: 10px;
+}
+
+.comment-options{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.comment-options div{
+    /* margin: 20px; */
+}
+
+.comment-vote-btn{
+    display: flex;
+}
+
+.comment-vote-op{
+    padding:0px 5px;
+    font-size: 15px;
+    
+}
+
+.comment-vote-op:hover{
+    background-color: grey;
+}

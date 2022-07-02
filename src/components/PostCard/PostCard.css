@@ -1,0 +1,110 @@
+.post-div{
+    display: flex;
+    width: 50%;
+    margin: 0 auto;
+    margin-top:10px;
+    border: 1px solid #e3e4e6;
+    border-radius: 4px;
+    background-color: white;
+    text-decoration: none;
+    color: black;
+}
+
+.posts-votes-sub-div{
+    width:40px;
+}
+
+.posts-votes-sub-div-votes{
+    margin-top:-10px;
+    margin-bottom:-10px;
+}
+
+.arrow-container{
+    margin: 8px;
+}
+
+.arrow-container:hover{
+    background-color: #DAE0E5;
+    border-radius: 2px;
+}
+
+.arrow-container-selected{
+    background-color: #DAE0E5;
+    margin: 8px;
+    border-radius: 2px;
+}
+
+.post-media{
+    text-decoration: none;
+    color: black;
+}
+
+.post-media:hover{
+    color:black;
+}
+
+/* .posts-votes-sub-div:hover{
+    background-color: red;
+} */
+.post-text{
+    text-align: left;
+    transition: none;
+}
+
+.post-text:hover{
+    color: black;
+    transition: none;
+}
+
+.post-options-btn{
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    margin-right: 20px;
+    color: black;
+    transition: none;
+    padding:5px;
+}
+
+.post-options-btn:hover{
+    color:black;
+    background-color: #DAE0E5;
+    border-radius: 4px;
+}
+
+.comment-label{
+    margin-left: 10px;
+    font-size: 13px;
+}
+
+.post-info{
+    display: flex;
+    align-items: center;
+}
+
+.post-title{
+    font-size: 18px;
+    text-align: left;
+}
+
+.post-sub{
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+.post-user{
+    font-size:13px;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.save-label{
+    font-size: 13px;
+    margin-left:10px;
+}
+
+.post-options{
+    margin-top:15px;
+}
