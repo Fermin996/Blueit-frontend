@@ -1,8 +1,7 @@
 
-const getPosts= async(sortBy)=>{
-    console.log(sortBy)
+const getPosts= async(sortBy, start)=>{
     try{
-        const response = await fetch('http://localhost:5000/posts/sort/'+sortBy, {
+        const response = await fetch('http://localhost:5000/posts/sort/'+sortBy+"/"+start, {
             method: "GET"
         })
 
@@ -13,10 +12,20 @@ const getPosts= async(sortBy)=>{
 
 }   
 
+const searchPost= async(string)=>{
+    try{
+        const response = await fetch('http://localhost:5000/posts/search/'+string, {
+            method: "GET"
+        })
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
+}
+
 const createPost = async(post) =>{
 
     try{
-        console.log("this worked")
         const response = await fetch('http://localhost:5000/posts/', {
             method: "POST",
             headers:{
@@ -88,5 +97,31 @@ const updateVotes=async(userId, voteType, postId, voteId)=>{
     }
 }
 
+const editPost=async(postId, postText)=>{
+    console.log(postId)
+    try{
+        const response = await fetch('http://localhost:5000/posts/'+postId, {
+            method: "PATCH",
+            headers:{
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({postText})
+        })
+    }catch(err){
+        console.log(err)
+    }
+}
 
-export {createPost, getPosts, getPostById, getPostsBySub, getPostsByUser, updateVotes}
+const deletePost=async(postId)=>{
+    try{
+        const response = await fetch('http://localhost:5000/posts/'+postId, {
+            method: "DELETE"
+        })
+        return response.json()
+    }catch(err){
+        console.log(err)
+    }
+}
+
+export {createPost, getPosts, getPostById, getPostsBySub, getPostsByUser, updateVotes, editPost, deletePost, searchPost}

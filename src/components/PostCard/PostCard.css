@@ -1,6 +1,6 @@
 .post-div{
     display: flex;
-    width: 50%;
+    width: 90%;
     margin: 0 auto;
     margin-top:10px;
     border: 1px solid #e3e4e6;
@@ -21,6 +21,7 @@
 
 .arrow-container{
     margin: 8px;
+    cursor: pointer;
 }
 
 .arrow-container:hover{
@@ -32,6 +33,7 @@
     background-color: #DAE0E5;
     margin: 8px;
     border-radius: 2px;
+    cursor: pointer;
 }
 
 .post-media{
@@ -95,9 +97,14 @@
 
 .post-user{
     font-size:13px;
-    margin-left: 10px;
+    margin-left: 5px;
     display: flex;
     flex-direction: row;
+}
+
+.post-card-date-text{
+    margin-left:5px;
+    font-size: 13px;
 }
 
 .save-label{
@@ -108,3 +115,4 @@
 .post-options{
     margin-top:15px;
 }
+

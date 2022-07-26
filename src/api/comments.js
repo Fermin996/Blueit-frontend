@@ -12,6 +12,20 @@ const getCommentsByParent = async(parentId)=>{
 
 }
 
+const getCommentById = async(commentId)=>{
+    try{
+        const response = await fetch('http://localhost:5000/comments/'+commentId, {
+            method: "GET"
+        })
+
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
+
+
+}
+
 const getCommentsByPost = async(postId)=>{
 
     try{
@@ -57,4 +71,56 @@ const getCommentsByUser=async(userId)=>{
     }
 }
 
-export { createComment, getCommentsByParent, getCommentsByPost, getCommentsByUser }
+const changeCommentVotes=async(userId, voteType, commentId, voteId)=>{
+
+    try{
+        const response = await fetch('http://localhost:5000/comments/votes/'+commentId, {
+            method:"PATCH",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({userId, voteType, voteId})
+        })
+
+        return response.json()
+    }catch(err){
+        console.log(err)
+    }
+
+}
+
+const editComment=async(commentId, text)=>{
+    console.log(commentId)
+    try{
+        const response = await fetch('http://localhost:5000/comments/'+commentId, {
+            method:"PATCH",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({text})
+        })
+
+        return response.json()  
+    }catch(err){
+        console.log(err)
+    }
+}
+
+const deleteComment=async(commentId)=>{
+    try{
+        const response = await fetch('http://localhost:5000/comments/'+commentId, {
+            method:"DELETE"
+        })
+        return response.json()
+    }catch(err){
+        console.log(err)
+    }
+}
+
+export { 
+    createComment, getCommentsByParent, getCommentsByPost, 
+    getCommentsByUser, changeCommentVotes, editComment, deleteComment, 
+    getCommentById
+}

@@ -18,7 +18,6 @@ const CreatePost = (props) => {
   const dropHandler=async()=>{
     let optionsCont = []
     subData = await getSubs();
-    // setDroppedMenuTrue([...subData.subs])
     subData.subs.forEach((sub) =>{
       optionsCont.push({
         value: sub._id,
@@ -27,7 +26,6 @@ const CreatePost = (props) => {
     setOptions([...optionsCont])
 
     })
-    // return subData
   }
 
   useEffect(()=>{
@@ -91,7 +89,6 @@ const CreatePost = (props) => {
         
         <div className='create-post-div'>
             <div className='cascader-holder'>
-              {/* <div onClick={dropClickedHandler}>Select a Sub</div> */}
               <Cascader placeholder="Select A Sub" options={options} onChange={dropChangeHandler}/>
             </div>
             <div className='create-post-head'>Create A Post</div>

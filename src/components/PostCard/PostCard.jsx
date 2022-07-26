@@ -3,150 +3,103 @@ import { Link } from 'react-router-dom'
 import './PostCard.css'
 import {UpOutlined, DownOutlined, CommentOutlined, SaveOutlined} from '@ant-design/icons'
 import { updateVotes } from '../../api/posts'
+import { timeCheck } from '../../functions/timeCheck'
+import { voteInitializer, arrowHandler } from '../../functions/voteFunctions'
+import { toggleItemSaved } from '../../functions/toggleItemSaved'
 
-const PostCard = ({setPage, post, setSelectedUser, setSub, user}) => {
+const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
 
     const [vote, setVote] = useState({votes:null, voteType:null})
+    const [dateDiff, setDateDiff] = useState("")
+    const [postIsSaved, setPostIsSaved] = useState(false)
+
+    let savedPostFound
     
     useEffect(()=>{
-        let newDate = new Date()
-        let postDate = new Date(post.date)
-        let diff = Math.abs(newDate - postDate)
-        console.log(diff/=(1000*60*60))
-        // Checking if user has liked loaded post
-        //then sets vote state for each vote
-        if(post.voteUsers && !vote.votes && user){
-            // for(let x=0; x<post.voteUsers.length; x++){
-            //     if(user.userId === post.voteUsers[x].userVote.user && post.voteUsers[x].userVote.voteType === "downVote"){          
-            //         setVote({voteType:"downVote", votes:post.votes, voteId:post.voteUsers[x]._id})
-            //         break
-            //     }else if(user.userId === post.voteUsers[x].userVote.user && post.voteUsers[x].userVote.voteType === "upVote"){
-            //         setVote({voteType:"upVote", votes:post.votes, voteId:post.voteUsers[x]._id})
-            //         break
-            //     }
-            //     if(!vote.votes && x === post.voteUsers.length-1){
-            //         setVote({voteType:null, votes:post.votes, voteId:null})
-            //     }
-            // }
-
-            let foundVote;
-
-            foundVote = post.voteUsers.find((vote) => {
-                return vote.userVote.user === user.userId
+        
+        if(user && user.saved){
+            savedPostFound = user.saved.savedPosts.find(p => {
+                return p === post._id
             })
+        }
+        
+        if(savedPostFound){
+            setPostIsSaved(true)
+        }
 
-            console.log(foundVote)
+        setDateDiff(timeCheck(post.date))
+        setVote(voteInitializer(post, vote, user))
+    },[user])
+    
+    const postSaveClickedHandler=async()=>{
+        let updatedUser = await toggleItemSaved(user.userId, post._id, "post", postIsSaved)
+        
+        setUser({
+            userId:updatedUser.user.id,
+            username:updatedUser.user.username,
+            saved:updatedUser.user.saved
+        })
+        
 
-            if(foundVote && foundVote.userVote.voteType === "downVote"){          
-                setVote({voteType:"downVote", votes:post.votes, voteId:foundVote._id})    
-            }else if(foundVote && foundVote.userVote.voteType === "upVote"){
-                setVote({voteType:"upVote", votes:post.votes, voteId:foundVote._id})
-            }
-
-            if(!vote.votes && !foundVote){
-                setVote({voteType:null, votes:post.votes, voteId:null})
-            }
-
-            // if there are no vote users, only set vote count
-            if(post.voteUsers.length === 0){
-                setVote({voteType:null, votes:post.votes, voteId:null})
-            }
+        if(postIsSaved){
+            setPostIsSaved(false)
         }else{
-            // if user id not logged in, only set vote count
-            setVote({voteType:null, votes:post.votes, voteId:null})    
-     }
-    },[])
+            setPostIsSaved(true)
+        }
+
+    }
+
+    const arrowClickedHandler=async(voteType)=>{
+        let voteData
+        voteData = await arrowHandler(user, voteType, post, vote, "post")
+        setVote(voteData)
+    }
 
     let arrowUpDiv=(
-        <div className='arrow-container' onClick={()=>arrowHandler("upVote")}>
+        <div className='arrow-container' onClick={()=>arrowClickedHandler("upVote")}>
             <UpOutlined />
         </div>
     )
 
     let arrowDownDiv = (
-        <div className='arrow-container' onClick={()=>arrowHandler("downVote")}>
+        <div className='arrow-container' onClick={()=>arrowClickedHandler("downVote")}>
             <DownOutlined/>
         </div>
     )
 
-    
-    const arrowHandler=async(voteType)=>{
-        let newVoteType
-
-        if(!user){
-            return
-        }
-
-
-        // try {
-            let tempVoteCount
-            let newPost;
-            tempVoteCount = vote.votes
-            if(!vote.voteType && voteType === "upVote"){
-                newVoteType="upVote"
-                tempVoteCount+=1
-                newPost = await updateVotes(user, newVoteType, post._id, vote.voteId)
-                console.log(newPost)
-                // let foundVoteId = newPost.post.voteUsers.find(voteU => voteU.userVote.user === user)
-                let foundVoteId = newPost.post.voteUsers.find((voteUser) => {
-                    return voteUser.userVote.user === user.userId
-                })
-                console.log(foundVoteId)
-                setVote({votes:tempVoteCount, voteType:"upVote", voteId:foundVoteId._id})
-            }else if(!vote.voteType && voteType === "downVote"){
-                newVoteType="downVote"
-                tempVoteCount--
-                newPost = await updateVotes(user, newVoteType, post._id, vote.voteId)
-                let foundVoteId = newPost.post.voteUsers.find((voteUser) => {
-                    return voteUser.userVote.user === user.userId
-                })
-                setVote({votes:tempVoteCount, voteType:"downVote", voteId:foundVoteId._id})
-            }else if(vote.voteType === "upVote" && voteType === "upVote"){
-                newVoteType = "upUnclicked"
-                tempVoteCount--
-                newPost = await updateVotes(user, newVoteType, post._id, vote.voteId)
-                setVote({votes:tempVoteCount, voteType:null, voteId:null})
-            }else if(vote.voteType === "downVote" && voteType === "downVote"){
-                newVoteType = "downUnclicked"
-                tempVoteCount++
-                newPost = await updateVotes(user, newVoteType, post._id, vote.voteId)
-                setVote({votes:tempVoteCount, voteType:null, voteId:null})
-            }else if(vote.voteType === "upVote" && voteType === "downVote"){
-                newVoteType = "utoD"
-                tempVoteCount-=2
-                newPost = await updateVotes(user, newVoteType, post._id, vote.voteId)
-                setVote({votes:tempVoteCount, voteType:"downVote", voteId:vote.voteId})
-            }else if(vote.voteType === "downVote" && voteType === "upVote"){
-                newVoteType = "dtoU"
-                tempVoteCount+=2
-                newPost = await updateVotes(user, newVoteType, post._id, vote.voteId)
-                setVote({votes:tempVoteCount, voteType:"upVote", voteId:vote.voteId})
-            }
-
-            // newPost = await updateVotes(user, newVoteType, post._id, vote.voteId)
-
-            console.log(newPost)
-
-        // } catch (error) {
-        //     console.log(error)
-        // }
-
-    }
+    let saveIcon = (
+    <>
+        <SaveOutlined/>
+        <div className='save-label' onClick={postSaveClickedHandler}>
+            Save
+        </div>
+    </>
+    )    
 
     if(vote.voteType==="upVote"){
         arrowUpDiv = (
-            <div className='arrow-container-selected' onClick={()=>arrowHandler("upVote")}>
+            <div className='arrow-container-selected' onClick={()=>arrowClickedHandler("upVote")}>
                 <UpOutlined style={{color: 'orangered'}}/>
             </div> 
         )
     }else if(vote.voteType==="downVote"){
         arrowDownDiv = (
-            <div className='arrow-container-selected' onClick={()=>arrowHandler("downVote")}>
-                <DownOutlined style={{color:'navy'}}/>
+            <div className='arrow-container-selected' onClick={()=>arrowClickedHandler("downVote")}>
+                <DownOutlined style={{color:'alice  blue'}}/>
             </div> 
         )
     }
-
+    
+    if(postIsSaved){
+        saveIcon = (
+            <>
+                <SaveOutlined style={{color:"blue"}}/>
+                <div className='save-label' onClick={postSaveClickedHandler}>
+                    Unsave
+                </div>
+            </>
+        )
+    }
 
   return (
     <div className='post-div'>
@@ -161,8 +114,10 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user}) => {
         </div>
         <div className='post-content'>
             <div className='post-info'>
-                <Link className='post-sub' to='/sub-view' onClick={()=>setSub(post.subName)} >b/{post.subName}</Link>
+                <Link className='post-sub' to='/sub-view' onClick={()=>setSub(post.sub)} >b/{post.subName}</Link>
+                <div className='post-card-date-text'>Posted by</div>
                 <Link className='post-user' to='/user-profile' onClick={()=>setSelectedUser(post.user)} >u/{post.username}</Link>
+                <div className='post-card-date-text'>{dateDiff}</div>
             </div>
             <Link className='post-media' to="/post-view" onClick={()=>setPage(post._id)}>
                 <h3 className='post-title'>{post.title}</h3>
@@ -176,10 +131,7 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user}) => {
                     </div>
                 </Link>
                 <div className='post-options-btn'>
-                    <SaveOutlined />
-                    <div className='save-label'>
-                        Save
-                    </div>
+                    {saveIcon}
                 </div>
             </div>
         </div>

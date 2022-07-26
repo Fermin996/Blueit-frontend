@@ -1,0 +1,21 @@
+.sub-view-back{
+    padding-top:30px;
+    padding-bottom:30px;
+    background-color: #DAE0E6;;
+    display: flex;
+    height: 100%;
+}
+
+.sub-view-posts-div{
+    width: 60%;
+    margin-left:40px;
+}
+
+@media(max-width:900px){
+
+    .sub-view-posts-div{
+        width: 95%;
+        margin-left:20px;
+    }
+
+}

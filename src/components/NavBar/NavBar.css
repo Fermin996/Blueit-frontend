@@ -106,4 +106,29 @@
 
 .logout-btn{
     margin-right: 20px;    
+    margin-left: 20px;
+    font-size:15px;
+    font-weight:700;
+    padding: 5px;
+    cursor: pointer;
 }
+
+.logout-btn:hover{
+    border-radius: 10px;
+    background-color: #DAE0E5;
+}
+
+.logged-nav{
+    display: flex;
+    align-items: center;
+}
+
+.user-profile-btn{
+    padding:4px;
+    cursor: pointer;
+}
+.user-profile-btn:hover{
+    background-color: #DAE0E5;
+    padding: 4px;
+    border-radius: 5px;
+}   

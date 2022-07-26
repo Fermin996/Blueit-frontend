@@ -5,7 +5,7 @@ import SubBlueCard from '../SubBlueCard/SubBlueCard'
 import PostCard from '../PostCard/PostCard'
 import { getPostsBySub } from '../../api/posts'
 
-const SubView = (props) => {
+const SubView = ({sub, user, setSelectedUser, setPage}) => {
 
   const [subPosts, setSubPosts] = useState()  
 
@@ -13,9 +13,7 @@ const SubView = (props) => {
     let subObj
 
     try{
-        console.log(props.sub)
-        subObj = await getPostsBySub(props.sub)
-        console.log("sub obj returned")
+        subObj = await getPostsBySub(sub)
         setSubPosts(subObj.page)
     }catch(err){
         console.log(err)
@@ -29,13 +27,15 @@ const SubView = (props) => {
   if(!subPosts){
       return <div>...Loading</div>
   }
-
+  console.log(subPosts)
   return (
-    <div>  
+    <div className='sub-view-back'>
+      <div className='sub-view-posts-div'>
         {subPosts.map((post)=>{
-            <PostCard post={post} sub={props.sub}/>
+          return <PostCard post={post} sub={sub} user={user} setSelectedUser={setSelectedUser} setPage={setPage}/>
         })}
-        {/* <SubBlueCard  /> */}
+      </div>  
+        <SubBlueCard selectedSub={sub}/>
     </div>
   )
 }

@@ -7,14 +7,27 @@ import './SubBlueCard.css'
 const SubBlueCard = (props) => {
     
     const [currentSub, setCurrSub] = useState(null)
-    console.log(props.selectedSub)
+    // const [subId, setSubId] = useState(null)
+    // console.log(props.selectedSub)
+  
+    // if(props.sub){
+    //   let cont = props.sub
+
+    //   setSubId(cont)
+    // }else{
+    //   setSubId(props.selectedSub)
+    // }
+    
   const getSubCard=async()=>{
     let subCont
 
     try{
         subCont = await getSubById(props.selectedSub)
         setCurrSub(subCont.sub)
-        props.setSelectedSubName(subCont.sub.subName)
+
+        if(props.setSelectedSubName){
+          props.setSelectedSubName(subCont.sub.subName)
+        }
     }catch(err){
         console.log(err)
     }
@@ -71,7 +84,9 @@ const SubBlueCard = (props) => {
                 {currentSub.subInfo}
             </div>
             <div className='sub-count-div'>{numToString(currentSub.memberCount)} Members</div>
-            <div className='sub-cake-div'>Created {currentSub.cakeDay}</div>
+            <div className='sub-cake-div'>Created {
+            currentSub.cakeDay.slice(0, 4)+"/"+currentSub.cakeDay.slice(5, 7)+"/"+currentSub.cakeDay.slice(8, 10)
+            }</div>
         </div>
         <div className='sub-rules-div'>
             <div className='sub-card-title'>b/{currentSub.subName} Rules</div>

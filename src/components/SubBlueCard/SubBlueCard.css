@@ -1,6 +1,8 @@
 .sub-card-div{
     width: 30%;
     margin: 30px;
+    position: fixed;
+    margin-left: 66vw;
 }   
 
 .sub-card-top{
@@ -65,3 +67,10 @@
 }
 
 
+@media(max-width:900px){
+
+    .sub-card-div{
+        displaY:none;
+    }
+
+}

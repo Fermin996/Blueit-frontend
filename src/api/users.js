@@ -40,10 +40,59 @@ const login = async (user) =>{
         console.log(err)
     }
 
-    
+}
+
+const getSavedItems = async(userId) =>{
+    try {
+        const response = await fetch("http://localhost:5000/user/save/"+userId, {
+            method: "GET"
+        })
+        return await response.json()
+    } catch (error) {
+        
+    }
+}
+
+
+const saveItem = async(userId, itemId, type)=>{
+    console.log(userId)
+    try{
+        const response = await fetch("http://localhost:5000/user/save/"+userId, {
+            method:"PATCH",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({itemId, type})
+        })
+
+        return response.json()
+    }catch(err){
+        console.log(err)
+    }
+
+}
+
+const deleteItem = async(userId, itemId, type)=>{
+
+    try{
+        const response = await fetch("http://localhost:5000/user/delete-saved/"+userId, {
+            method: "PATCH",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({itemId, type})
+        })
+
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
 
 }
 
 
 
-export {login, signUp}
+
+export {login, signUp, saveItem, deleteItem, getSavedItems}
