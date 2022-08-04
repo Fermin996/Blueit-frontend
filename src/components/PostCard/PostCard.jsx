@@ -67,14 +67,6 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
         </div>
     )
 
-    let saveIcon = (
-    <>
-        <SaveOutlined/>
-        <div className='save-label' onClick={postSaveClickedHandler}>
-            Save
-        </div>
-    </>
-    )    
 
     if(vote.voteType==="upVote"){
         arrowUpDiv = (
@@ -89,6 +81,15 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
             </div> 
         )
     }
+
+    let saveIcon = (
+        <>
+            <SaveOutlined/>
+            <div className='save-label' onClick={postSaveClickedHandler}>
+                Save
+            </div>
+        </>
+     )  
     
     if(postIsSaved){
         saveIcon = (

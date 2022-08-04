@@ -40,16 +40,27 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
         setCommentData({...setCommentData, [e.target.name]:e.target.value })
     }   
     
-    
+    console.log(postData)
     const handleCommentSubmit= async(e)=>{
         e.preventDefault()
-
+        let newComment
         try{
             let data = {...commentData, user:user.userId, username:user.username , post:page}
-            await createComment(data)
+            newComment = await createComment(data)
+            // console.log([...postData.post.comments, newComment.comment._id])
+            // let postdataCopy = Object.assign({}, postData.post)
+            // postdataCopy.comments = [...postData.post.comments, newComment.comment._id]
+            // setPostData({post: postdataCopy})
+            // console.log(postData)
+            // console.log(postData)
+            // console.log(newComment)
+            // setCurrComments([...postData.post.comments, newComment.comment._id])
+            createCommentArr(postData.post._id)
+            setCommentData({text:""})
         }catch(err){
             console.log(err)
         }
+
 
     }
 
@@ -77,12 +88,17 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
     const handlePostEditSubmit = async(e)=>{
         e.preventDefault()
 
+        let editedPost
         try{
-            let editedPost
             editedPost = await editPost(postData.post._id, postEditText)
         }catch(err){
             console.log(err)
         }
+
+        console.log(editedPost)
+
+        setPostData(editedPost)
+        setPostEditClicked(false)
     }
 
     const deleteConfirmed=async(e)=>{
@@ -135,9 +151,9 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
     )
     
     let postEditDiv = (
-        <form onSubmit={handlePostEditSubmit}>
-            <textarea value={postEditText} onChange={handlePostEdit} rows={6} name="text" />
-            <div>
+        <form onSubmit={handlePostEditSubmit} className="post-edit-div">
+            <textarea className="post-text-edit" value={postEditText} onChange={handlePostEdit} rows={6} name="text" />
+            <div className='edit-button-div'>
                 <button>Done</button>
             </div>
         </form>
@@ -212,7 +228,7 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
         </div>
         <div className='comments-and-form'>
             <form onSubmit={handleCommentSubmit} className='comment-form'>
-                <textarea rows={6} name="text" onChange={commentTextHandler} className="init-comment-TA" />
+                <textarea rows={6} value={commentData.text} name="text" onChange={commentTextHandler} className="init-comment-TA" />
                 <div className='comment-btn-div'>
                     <button type="submit" className='text-done-btn'>Done</button>
                 </div>

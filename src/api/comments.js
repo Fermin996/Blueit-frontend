@@ -53,6 +53,8 @@ const createComment = async(commentData)=>{
             },
             body:JSON.stringify(commentData)
         })
+
+        return await response.json()
     }catch(err){
         console.log(err)
     }

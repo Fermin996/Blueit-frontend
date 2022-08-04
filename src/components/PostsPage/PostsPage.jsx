@@ -1,33 +1,51 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './PostsPage.css'
 import { getPosts, getPostsBySub } from '../../api/posts';
+import { getSubs } from "../../api/subs"
 import { FireOutlined, StarOutlined, CheckSquareOutlined, UpOutlined } from '@ant-design/icons';
 import PostCard from '../PostCard/PostCard';
+import CommunitiesCard from './CommunitiesCard/CommunitiesCard';
 
-const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, user, setSub, sortMethod, setSortMethod, setUser}) => {
+const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, user, setSub, setUser}) => {
 
+    const navigate = useNavigate()
     
     const [offset, setOffset] = useState(0)
-    const [checkSort, setCheckSort] = useState("votes")
+    const [checkSort, setCheckSort] = useState("date")
+    const [sortMethod, setSortMethod] = useState("date")
 
     const currPostRef = useRef()
     currPostRef.current = currPosts
 
-    const callGetPost = async(offsetInput)=>{
-        let offCont = offsetInput
+    const offsetRef = useRef()
+    offsetRef.current=offset
+
+
+    // const callGetSubs =async()=>{
+    //     let subsCont
+    //     let sliceIndex
+    //     sliceIndex = communitiesButtonClicked ? 10 : 6
+    //     subsCont = await getSubs()
+    //     subsCont.subs = subsCont.subs.slice(0,6)
+    //     setSubsInCard(subsCont)
+    // }
+    
+    const callGetPost = async()=>{
+
         let currPostCont = currPostRef.current
 
         if( sortMethod!==checkSort && currPosts.page.length !== 0){
-            offCont = 0;
+            setOffset(0)
             setCheckSort(sortMethod)
             currPostCont = {page:[]}
+            setCurrPosts({page:[]})
         }
 
         try{
-            let postArr = await getPosts(sortMethod, offCont)
-
-            if( !currPostRef.current.page[0] || currPostRef.current.page[0]._id === postArr.page[0]._id){
+            console.log(offset)
+            let postArr = await getPosts(sortMethod, offset)
+            if( !currPostCont.page[0] || !currPostRef.current.page[0] || currPostRef.current.page[0]._id === postArr.page[0]._id){
                 setCurrPosts( 
                     {
                         page:[...postArr.page]
@@ -48,8 +66,7 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
 
     const handleScroll=(e)=>{
         if(window.innerHeight + e.target.documentElement.scrollTop >= e.target.documentElement.scrollHeight ){
-            let currOffset = offset+9
-            setOffset(currOffset)
+            setOffset(offsetRef.current+4)
         }
     }
 
@@ -58,17 +75,11 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
     },[]) 
 
     useEffect(()=>{
-
-    // if(sortMethod !== checkSort){
-    //     setOffset(0)
-    //     setCheckSort(sortMethod)
-    // }    
-
-    if(page === "home"){
-        callGetPost(offset)
-    }
-
-   },[page, sortMethod, offset])
+        // callGetSubs()
+        if(page === "home"){
+            callGetPost()
+        }
+   },[page, sortMethod, offset])    
 
 
 
@@ -105,47 +116,32 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
             })}
 
         </div>
-        <div className='post-page-user-card'>
+        <CommunitiesCard setSub={setSub} />
+        {/* <div className='post-page-user-card'>
             <div>
                 <div className="card-label-pp">
-                    Top Communities
+                    Communities
                 </div>
-                <div className='community-sub-card'>
-                    <p>1</p>
+                {subsInCard ? subsInCard.subs.map((sub) => {
+                    return <div onClick={()=>subCardHandler(sub)} className='community-sub-card'>
+                    <p>{subsInCard.subs.indexOf(sub)+1}</p>
                     <UpOutlined 
                         style={{
                             color:"#47D160", 
                             strokeWidth:"40",
                             stroke:"#47D160"
                             }}/>
-                    <p>AITA</p>
+                    <p>{sub.subName}</p>
                 </div>
-                <div className='community-sub-card'>
-                    <p>2</p>
-                    <UpOutlined 
-                        style={{
-                            color:"#47D160", 
-                            strokeWidth:"40",
-                            stroke:"#47D160"
-                            }}/>
-                    <p>ASKREDDIT</p>
-                </div>
-                <div className='community-sub-card'>
-                    <p>3</p>
-                    <UpOutlined 
-                        style={{
-                            color:"#47D160", 
-                            strokeWidth:"40",
-                            stroke:"#47D160"
-                            }}/>
-                    <p>BOOKS</p>
-                </div>
+                }) : null}
             </div>
             
-            <div className='see-all-button' >
+            {communitiesButtonClicked ? null : (
+            <div className='see-all-button' onClick={()=>setCommunitiesButtonClicked(true)} >
                 See All Communities
             </div>
-        </div>
+            )}
+        </div> */}
     </div>
 
   )

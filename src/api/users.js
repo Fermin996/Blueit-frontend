@@ -1,6 +1,12 @@
 
 
 const signUp = async (user) => {
+    let userCont = user
+    if(!user){
+        userCont = {email:false, password:false, username:false}
+    }
+
+    console.log(userCont)
 
     try{
         const resp = await fetch("http://localhost:5000/user/signup", {
@@ -9,7 +15,7 @@ const signUp = async (user) => {
             Accept: "application/json",
             "Content-type":"application/json"
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(userCont)
         })
         return await resp.json();
     }catch(err){
@@ -22,7 +28,11 @@ const signUp = async (user) => {
 
 
 const login = async (user) =>{
-    
+    let userCont = user
+    if(!user){
+        userCont = {email:false, password:false}
+    }
+
     try{
         const response = await fetch("http://localhost:5000/user/login", {
             method:"POST",
@@ -30,7 +40,7 @@ const login = async (user) =>{
                 "Content-Type":"application/json"
             },
 
-            body: JSON.stringify(user)
+            body: JSON.stringify(userCont)
 
         })
 
@@ -40,6 +50,18 @@ const login = async (user) =>{
         console.log(err)
     }
 
+}
+
+const getUser = async(userId) =>{
+    console.log(userId)
+    try {
+        const response = await fetch("http://localhost:5000/user/"+userId, {
+            method: "GET"
+        })
+        return await response.json()
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const getSavedItems = async(userId) =>{
@@ -92,7 +114,28 @@ const deleteItem = async(userId, itemId, type)=>{
 
 }
 
+const editUserBio= async(bioText, userId)=>{
+
+    console.log(bioText)
+    console.log(userId)
+
+    try{
+        const response = await fetch("http://localhost:5000/user/bio-edit/"+userId, {
+            method: "PATCH",
+            headers:{
+                Accept:"application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({bio: bioText})
+        })
+        return await response.json()
+    }catch(err){
+        console.log(err)
+    }
+
+}
 
 
 
-export {login, signUp, saveItem, deleteItem, getSavedItems}
+
+export {login, signUp, saveItem, deleteItem, getSavedItems, getUser, editUserBio}

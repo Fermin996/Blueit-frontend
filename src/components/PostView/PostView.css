@@ -11,7 +11,6 @@
 }
 
 .post-votes-div-pv{
-    width: 100%;
     background-color: #F8F9FA;
 }
 
@@ -43,7 +42,7 @@
 }
 
 .comments-and-form{
-    width: 85%;
+    width: 90%;
     background-color: white;
     margin: 0 auto;
     margin-top:5px;
@@ -123,6 +122,24 @@
     position: absolute;
     
 }
+
+.post-edit-div{
+    width: 100%;
+}
+
+.post-text-edit{
+    width: 65vw;
+}
+
+.edit-button-div{
+    margin-left:0; 
+}
+
+.edit-button-div button{
+    margin-right:-100%; 
+}
+
+
 
 @media(max-width:900px){
 

@@ -1,5 +1,7 @@
 
 const getPosts= async(sortBy, start)=>{
+    console.log(start)
+    console.log(sortBy)
     try{
         const response = await fetch('http://localhost:5000/posts/sort/'+sortBy+"/"+start, {
             method: "GET"
@@ -24,7 +26,7 @@ const searchPost= async(string)=>{
 }
 
 const createPost = async(post) =>{
-
+    console.log(post)
     try{
         const response = await fetch('http://localhost:5000/posts/', {
             method: "POST",
@@ -82,6 +84,7 @@ const getPostsByUser=async(userId)=>{
 }
 
 const updateVotes=async(userId, voteType, postId, voteId)=>{
+    console.log("am i even connected")
     try{
         const response = await fetch('http://localhost:5000/posts/votes/'+postId, {
             method: "PATCH",
@@ -108,6 +111,8 @@ const editPost=async(postId, postText)=>{
             },
             body:JSON.stringify({postText})
         })
+
+        return response.json()
     }catch(err){
         console.log(err)
     }

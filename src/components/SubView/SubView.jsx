@@ -30,6 +30,7 @@ const SubView = ({sub, user, setSelectedUser, setPage}) => {
   console.log(subPosts)
   return (
     <div className='sub-view-back'>
+      <h3 className="sub-view-name">{subPosts[0].subName}</h3>
       <div className='sub-view-posts-div'>
         {subPosts.map((post)=>{
           return <PostCard post={post} sub={sub} user={user} setSelectedUser={setSelectedUser} setPage={setPage}/>

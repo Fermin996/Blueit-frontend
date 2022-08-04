@@ -55,9 +55,9 @@ function App() {
         <Route path='/' element={<PostsPage 
           currPosts={currPosts} setCurrPosts={setCurrPosts} page={page} setPage={setPage} 
           setSelectedUser={setSelectedUser} setSub={setSub} user={user} 
-          sortMethod={sortMethod} setSortMethod={setSortMethod} setUser={setUser}
+           setUser={setUser}
           />} />
-        <Route path='/create-post' element={<CreatePost token={token} user={user} />} />
+        <Route path='/create-post' element={<CreatePost token={token} user={user} setPage={setPage} />} />
         <Route path='/login' element={<Login setToken={setToken} setUser={setUser} isLogin={true}/>} />
         <Route path='/signup' element={<Login setToken={setToken} setUser={setUser} isLogin={false}/>} />
         <Route path='/post-view' element={<PostView page={page} user={user} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />} />

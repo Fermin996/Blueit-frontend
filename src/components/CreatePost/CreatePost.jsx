@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './CreatePost.css'
 import SubBlueCard from '../SubBlueCard/SubBlueCard'
 import{ createPost }from '../../api/posts'
@@ -8,6 +8,8 @@ import "antd/dist/antd.css"
 import { Cascader } from 'antd'
 import { useEffect } from 'react'
 const CreatePost = (props) => {
+
+  const navigate = useNavigate()
 
   const [selectedSub, setSelectedSub] = useState(null)
   const [formData, setFormData] = useState({})
@@ -44,9 +46,14 @@ const CreatePost = (props) => {
   }
 
   const handlePostSubmit =async(e) =>{
+    let createdPost
     e.preventDefault()
     try{
-      await createPost({...formData, user:props.user.userId, username:props.user.username, sub:selectedSub[0], subName:selectedSubName})
+      console.log(props.user)
+      createdPost = await createPost({...formData, user:props.user.userId, username:props.user.username, sub:selectedSub[0], subName:selectedSubName})
+      console.log(createdPost)
+      props.setPage(createdPost.post._id)
+      navigate('/post-view')
     }catch(err){
       console.log(err)
     }

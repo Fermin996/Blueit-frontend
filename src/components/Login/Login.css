@@ -24,6 +24,7 @@
 
 .login-container{
     padding-top:20%;
+    width: 40%;
 }
 
 .log-form{
@@ -34,4 +35,19 @@
 .space{
     width: 10%;
     height: 100%;
+}
+
+.log-inputs{
+    width: 100%;
+    margin: 0 auto;
+}
+
+.error-style{
+    border-color: red;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.error-text{
+    color: red;
 }

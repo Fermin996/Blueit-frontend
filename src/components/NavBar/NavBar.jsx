@@ -15,10 +15,12 @@ const NavBar = props => {
 
   const handleSearchInput=(e)=>{
     setSearchText(e.target.value)
+    console.log(searchText)
   }
 
   const handleSearchSubmit=async(e)=>{
     e.preventDefault()
+
 
     try{
         let searchResults
@@ -60,7 +62,7 @@ const NavBar = props => {
             Blueit
         </Link>
 
-        <form className='search-form'>
+        <form className='search-form' onSubmit={handleSearchSubmit}>
             <input type="search" placeholder='Search' className='search-input' value={searchText} onChange={handleSearchInput} />
             <button type="submit" className="search-button">
                 <img src={searchImg}/>
