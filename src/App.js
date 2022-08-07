@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import './App.css';
 import { Route, Routes } from "react-router-dom";
 import PostsPage from './components/PostsPage/PostsPage';
@@ -11,6 +11,7 @@ import SearchResults from './components/SearchResults/SearchResults';
 import { getPosts } from './api/posts';
 import { login, getSavedItems } from './api/users';
 import SubView from './components/SubView/SubView';
+import { UserContext } from './helpers/user-context';
 
 function App() {
 
@@ -21,16 +22,17 @@ function App() {
   const [isLogin, setIsLogin] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
   const [sub, setSub] = useState(null)
-  const [sortMethod, setSortMethod] = useState("votes")
+
 
   const autoLogin = async(inData)=>{
     let data;
     let savedItems
     data=await login(inData)
     savedItems=await getSavedItems(inData.userId)
+    console.log(savedItems)
     if(data){
       setToken(data.token)
-      setUser({userId: inData.userId, username: data.userName, saved: savedItems.saved})
+      setUser({userId: inData.userId, username: data.userName, saved: savedItems})
     }
 
   }
@@ -44,7 +46,17 @@ function App() {
 
   },[])
   return (
-    <div className="App">
+    <UserContext.Provider 
+    value={{
+      isLogged:!!token,
+      token:token,
+      userId:user.userId,
+      userName:user.username,
+      saved:user.saved,
+      setUser: setUser
+    }}
+    >
+      <div className="App">
       <NavBar 
         currPosts={currPosts} setCurrPosts={setCurrPosts} 
         token={token} setToken={setToken} isLogin={isLogin}
@@ -57,16 +69,17 @@ function App() {
           setSelectedUser={setSelectedUser} setSub={setSub} user={user} 
            setUser={setUser}
           />} />
-        <Route path='/create-post' element={<CreatePost token={token} user={user} setPage={setPage} />} />
+        <Route path='/create-post' element={<CreatePost  setPage={setPage} />} />
         <Route path='/login' element={<Login setToken={setToken} setUser={setUser} isLogin={true}/>} />
         <Route path='/signup' element={<Login setToken={setToken} setUser={setUser} isLogin={false}/>} />
-        <Route path='/post-view' element={<PostView page={page} user={user} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />} />
-        <Route path='/user-profile' element={<UserProfile selectedUser={selectedUser} setSelectedUser={setSelectedUser} user={user} setPage={setPage}/>} />
-        <Route path='/my-profile' element={<UserProfile selectedUser={user.userId} user={user} setPage={setPage} isUserProf={true}/>} />
-        <Route path='/sub-view' element={<SubView sub={sub} setSelectedUser={setSelectedUser} setPage={setPage} user={user} />}/> 
+        <Route path='/post-view' element={<PostView setSub={setSub} page={page}  selectedUser={selectedUser} setSelectedUser={setSelectedUser} />} />
+        <Route path='/user-profile' element={<UserProfile selectedUser={selectedUser} setSelectedUser={setSelectedUser} setPage={setPage}/>} />
+        <Route path='/my-profile' element={<UserProfile selectedUser={user.userId}  setPage={setPage} isUserProf={true}/>} />
+        <Route path='/sub-view' element={<SubView sub={sub} setSelectedUser={setSelectedUser} setPage={setPage} />}/> 
         <Route path='/search-results' element={<SearchResults  />} />
       </Routes>
-    </div>
+      </div>
+    </UserContext.Provider>
   );
 }
 

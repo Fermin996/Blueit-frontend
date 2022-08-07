@@ -1,15 +1,13 @@
-import React, {useState, useEffect, useRef} from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom';
 import './PostsPage.css'
 import { getPosts, getPostsBySub } from '../../api/posts';
-import { getSubs } from "../../api/subs"
 import { FireOutlined, StarOutlined, CheckSquareOutlined, UpOutlined } from '@ant-design/icons';
 import PostCard from '../PostCard/PostCard';
 import CommunitiesCard from './CommunitiesCard/CommunitiesCard';
 
 const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, user, setSub, setUser}) => {
 
-    const navigate = useNavigate()
     
     const [offset, setOffset] = useState(0)
     const [checkSort, setCheckSort] = useState("date")
@@ -21,15 +19,6 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
     const offsetRef = useRef()
     offsetRef.current=offset
 
-
-    // const callGetSubs =async()=>{
-    //     let subsCont
-    //     let sliceIndex
-    //     sliceIndex = communitiesButtonClicked ? 10 : 6
-    //     subsCont = await getSubs()
-    //     subsCont.subs = subsCont.subs.slice(0,6)
-    //     setSubsInCard(subsCont)
-    // }
     
     const callGetPost = async()=>{
 
@@ -43,7 +32,6 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
         }
 
         try{
-            console.log(offset)
             let postArr = await getPosts(sortMethod, offset)
             if( !currPostCont.page[0] || !currPostRef.current.page[0] || currPostRef.current.page[0]._id === postArr.page[0]._id){
                 setCurrPosts( 
@@ -75,7 +63,6 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
     },[]) 
 
     useEffect(()=>{
-        // callGetSubs()
         if(page === "home"){
             callGetPost()
         }
@@ -109,7 +96,7 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
                 return (        
                     <PostCard 
                         setPage={setPage} post={post}
-                        setSelectedUser={setSelectedUser} user={user}
+                        setSelectedUser={setSelectedUser} 
                         key={post._id} setSub={setSub} setUser={setUser}
                         />
                 )
@@ -117,31 +104,6 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
 
         </div>
         <CommunitiesCard setSub={setSub} />
-        {/* <div className='post-page-user-card'>
-            <div>
-                <div className="card-label-pp">
-                    Communities
-                </div>
-                {subsInCard ? subsInCard.subs.map((sub) => {
-                    return <div onClick={()=>subCardHandler(sub)} className='community-sub-card'>
-                    <p>{subsInCard.subs.indexOf(sub)+1}</p>
-                    <UpOutlined 
-                        style={{
-                            color:"#47D160", 
-                            strokeWidth:"40",
-                            stroke:"#47D160"
-                            }}/>
-                    <p>{sub.subName}</p>
-                </div>
-                }) : null}
-            </div>
-            
-            {communitiesButtonClicked ? null : (
-            <div className='see-all-button' onClick={()=>setCommunitiesButtonClicked(true)} >
-                See All Communities
-            </div>
-            )}
-        </div> */}
     </div>
 
   )

@@ -12,16 +12,13 @@ const CommunitiesCard = ({setSub}) => {
     const callGetSubs =async()=>{
         let subsCont
         let sliceIndex
-        console.log(communitiesButtonClicked)
         sliceIndex = communitiesButtonClicked ? 10 : 6
-        console.log(sliceIndex)
         subsCont = await getSubs()
         subsCont.subs = subsCont.subs.slice(0,sliceIndex)
         setSubsInCard(subsCont)
     }
 
     useEffect(()=>{
-        console.log("i ran")
         callGetSubs()
     },[communitiesButtonClicked])
 
@@ -38,7 +35,7 @@ const CommunitiesCard = ({setSub}) => {
             </div>
             <div className='community-sub-card'></div>
             {subsInCard ? subsInCard.subs.map((sub) => {
-                return <div onClick={()=>subCardHandler(sub)} className='community-sub-card'>
+                return <div key={sub._id} onClick={()=>subCardHandler(sub)} className='community-sub-card'>
                 <p>{subsInCard.subs.indexOf(sub)+1}</p>
                 <UpOutlined 
                     style={{

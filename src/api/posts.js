@@ -1,7 +1,5 @@
 
 const getPosts= async(sortBy, start)=>{
-    console.log(start)
-    console.log(sortBy)
     try{
         const response = await fetch('http://localhost:5000/posts/sort/'+sortBy+"/"+start, {
             method: "GET"

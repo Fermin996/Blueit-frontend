@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import './Login.css'
 import sideImg from '../../login-side.png'
 
@@ -40,8 +40,7 @@ const Login = ({setToken, setUser, isLogin, setIsLogin}) => {
         JSON.stringify(data)
       )
       setToken(data.token)
-      console.log(data)
-      setUser({userId:data.userId, username:data.username})
+      setUser({userId:data.userId, username:data.username, saved: data.saved})
       navigate("/")  
 
     }else if(!data.isValid){
@@ -52,44 +51,6 @@ const Login = ({setToken, setUser, isLogin, setIsLogin}) => {
 
   }
 
-  // let logDiv = (
-  //   <div className='login-div'>
-  //     <img src={sideImg} />
-  //     <div className='login-container'>
-  //         <h3>Login</h3>
-  //         <form className='log-form' onSubmit={handleLoginSubmit}>
-  //             <input placeholder="Email" type="text" name="email" onChange={handleLoginChange}/>
-  //             <input placeholder="Password" type="text" name="password" onChange={handleLoginChange}/>
-  //             <button type="submit">Log In</button>
-  //         </form>
-  //     </div>
-  //     <div className='space'></div>
-  //   </div>
-  // )
-
-  // let logDiv=(
-  //   <div className='login-div'>
-  //     <img src={sideImg} />
-  //     <div className='login-container'>
-  //         <h3>{isLogin ? Login : SignUp}</h3>
-  //         <form className='log-form' onSubmit={handleLoginSubmit}>
-  //             <input placeholder="Email" type="text" name="email" onChange={handleLoginChange} className={inputErrors.email ? "error-style" : "log-inputs"} />
-  //             {inputErrors.email ? <div className='error-text'>{inputErrors.email}</div> : null}
-  //             {!isLogin ? (
-  //               <>
-  //               <input placeholder="Username" type="text" name="username" onChange={handleLoginChange} className={inputErrors.username ? "error-style" : "log-inputs"} />
-  //               {inputErrors.username ? <div className='error-text'>{inputErrors.username}</div> : null}
-  //               </>
-  //               ) : null}              
-  //             <input placeholder="Password" type="text" name="password" onChange={handleLoginChange} className={inputErrors.password ? "error-style" : "log-inputs"}/>
-  //             {inputErrors.password ? <div className='error-text'>{inputErrors.password}</div> : null}
-  //             <button type="submit">{isLogin ? Login : SignUp}</button>
-  //         </form>
-  //     </div>
-  //     <div className='space'></div>
-  //   </div>
-  //   )
-  console.log(inputErrors)
   return (
     <div className='login-back'>
       <div className='login-div'>

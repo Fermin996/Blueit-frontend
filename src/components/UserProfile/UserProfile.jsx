@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 
 import './UserProfile.css'
 import { getCommentsByUser, getCommentById } from '../../api/comments'
@@ -6,6 +6,7 @@ import { getPostsByUser, getPostById } from '../../api/posts'
 import PostCard from '../PostCard/PostCard'
 import Comment from '../Comment/Comment'
 import { getSavedItems, getUser, editUserBio } from '../../api/users'
+import { UserContext } from '../../helpers/user-context'
 
 
 const UserProfile = (props) => {
@@ -14,6 +15,8 @@ const UserProfile = (props) => {
   const [selectedUserData, setSelectedUserData] = useState({})
   const [editBioClicked, setEditBioClicked] = useState(false)
   const [editBioText, setEditBioText] = useState("")
+
+  const usrCtx = useContext(UserContext)
 
   const callGetUser=async()=>{
     let usrData
@@ -31,15 +34,24 @@ const UserProfile = (props) => {
 
   const getUserPosts = async(userId)=>{
     let data
-    console.log(userId)
+    let sorted =[]
     data = await getPostsByUser(userId)
-    setItems([...data.currUser.posts])
+    
+    data.currUser.posts.forEach((post)=>{
+      sorted.unshift(post)
+    })
+    
+    setItems([...sorted])
   }  
-  console.log(props)
+  
   const getUserComments = async(userId)=>{
     let data
+    let sorted =[]
     data = await getCommentsByUser(userId)
-    setItems([...data.comments])
+    data.comments.forEach((comment)=>{
+      sorted.unshift(comment)
+    })
+    setItems([...sorted])
   }
 
   const getItems=async(userId)=>{
@@ -47,29 +59,30 @@ const UserProfile = (props) => {
     let itemArr = []
     data = await getSavedItems(userId)
 
-
-    for(let x=0; x < data.saved.savedPosts.length; x++){
+    //First adding sorted posts to itemArr
+    for(let x=0; x < data.savedPosts.length; x++){
       let currItem
-      currItem = await getPostById(data.saved.savedPosts[x])
-      itemArr.push(currItem)
+      currItem = await getPostById(data.savedPosts[x].post)
+      itemArr.push({post:currItem.post, date:data.savedPosts[x].savedDate})
     }
 
     
     let startIndex = 0
-    for(let y=0; y < data.saved.savedComments.length; y++){
+    
+    for(let y=0; y < data.savedComments.length; y++){
       let commentItem
 
-      commentItem = await getCommentById(data.saved.savedComments[y])
-      
+      commentItem = await getCommentById(data.savedComments[y].comment)
+      console.log(commentItem)
       for(let z=startIndex; z<=itemArr.length; z++){
 
         let itemDate;
-        let commentDate = new Date(commentItem.comment.date)
+        let commentDate = new Date(data.savedComments[y].savedDate)
 
-        if(!itemArr[z].post){
-          itemDate = new Date(itemArr[z].comment.date)
+        if(!itemArr[z].sub){
+          itemDate = new Date(itemArr[z].date)
         }else{
-          itemDate = new Date(itemArr[z].post.date)
+          itemDate = new Date(itemArr[z].date)
         }
         
         if(commentDate < itemDate ){
@@ -79,13 +92,13 @@ const UserProfile = (props) => {
         }
 
         if( itemArr.length < z+2){
-          itemArr.push(commentItem)
+          itemArr.push(commentItem.comment)
           
           startIndex=z+1
           break
         }
         
-        let itemDate2 = new Date(itemArr[z+1].post.date)
+        let itemDate2 = new Date(itemArr[z+1].date)
         if(itemDate < commentDate && commentDate < itemDate2){
           itemArr.splice(z+1, 0, commentItem)
           startIndex = z+1
@@ -94,6 +107,14 @@ const UserProfile = (props) => {
         
       }
 
+    }
+
+    for(let i=0; i<itemArr.length; i++){
+      if(itemArr[i].post){
+        itemArr[i] = itemArr[i].post
+      }else if(itemArr[i].comment){
+        itemArr[i] = itemArr[i].comment
+      }
     }
 
     setItems([...itemArr])
@@ -105,7 +126,6 @@ const UserProfile = (props) => {
   },[props.selectedUser])
 
   useEffect(()=>{
-
     if(selected === 'posts'){
       getUserPosts(props.selectedUser)
     }else if(selected === 'comments'){
@@ -117,13 +137,10 @@ const UserProfile = (props) => {
   },[selected])  
 
 
-  let ovSelectStyle = null;
-  let postSelectStyle = null;
-  let commentSelectStyle = null;
   let selectedViewDiv = <div></div>
 
   let userSaved = (
-    <li className={ovSelectStyle} onClick={()=>setSelected('saved')}>Saved</li>
+    <li className={selected==="saved" ? "save-selected":null} onClick={()=>setSelected('saved')}>Saved</li>
   )
 
   let noItems = (
@@ -142,7 +159,7 @@ const UserProfile = (props) => {
 
   const bioEditSubmitted=async(e)=>{
     e.preventDefault()
-    await editUserBio(editBioText, props.user.userId)
+    await editUserBio(editBioText, usrCtx.userId)
     setEditBioClicked(false)
     selectedUserData.bio = editBioText
     setSelectedUserData(selectedUserData)
@@ -157,6 +174,11 @@ const UserProfile = (props) => {
     setEditBioText(selectedUserData.bio)
   }
 
+  const postsClickedHandler=()=>{
+    setSelected("posts")
+    setItems(null)
+  }
+
   if(editBioClicked){
 
     bioDiv=
@@ -169,45 +191,28 @@ const UserProfile = (props) => {
     </form>)
   }
 
-  if(selected === 'posts'){
-    postSelectStyle="post-selected"
-  }else if(selected === 'comments'){
-    commentSelectStyle="comments-selected"
+  if(items === null){
+      return <div>...loading</div>
   }
 
-    if(items === null){
-        return <div>...loading</div>
+  selectedViewDiv=items.map((item)=>{
+    if(item.sub){
+      return <PostCard selectedUser={props.selectedUser} post={item} setPage={props.setPage}/>
+    }else{
+      return <Comment thisCommentData={item} post={item} profileView={true}/>
     }
-
-    if(selected === 'posts'){
-      selectedViewDiv = items.map((item) => {        
-        return <PostCard selectedUser={props.selectedUser} post={item} setPage={props.setPage} user={props.user}/>
-      })
-    }else if(selected === 'comments'){
-      selectedViewDiv = items.map((item) => {     
-        return <Comment thisCommentData={item} post={item} profileView={true}/>
-      })
-    }else if(selected === 'saved'){
-      selectedViewDiv =items.map((item)=>{
-        if(item.post){
-          return <PostCard selectedUser={props.selectedUser} post={item.post} setPage={props.setPage} user={props.user}/>
-        }else if(item.comment){
-          return <Comment thisCommentData={item.comment} post={item.comment} profileView={true}/>
-        }
-      })
-    }
+  })
 
     if(items.length === 0){
       selectedViewDiv = noItems
     } 
 
-   
   return (
     <div className='user-prof-div'>
       <div className='user-op-side'>
           <ul className='user-prof-ul'>
-              <li className={postSelectStyle} onClick={()=>setSelected('posts')}>Posts</li>
-              <li className={commentSelectStyle} onClick={()=>setSelected('comments')}>Comments</li>
+              <li className={selected==="posts"?"post-selected":null} onClick={()=>postsClickedHandler()}>Posts</li>
+              <li className={selected==="comments"?"comments-selected":null} onClick={()=>setSelected('comments')}>Comments</li>
               { props.isUserProf ? userSaved : null }
           </ul>
           <div className='user-prof-page'>

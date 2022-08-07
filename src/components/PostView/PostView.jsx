@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import {Link} from 'react-router-dom'
 import Comment from '../Comment/Comment'
 import "./PostView.css"
@@ -8,9 +8,10 @@ import {message, Popconfirm } from 'antd'
 import { getPostById, editPost, deletePost } from '../../api/posts'
 import { createComment, getCommentsByPost } from '../../api/comments'
 import { arrowHandler, voteInitializer } from '../../functions/voteFunctions'
+import { UserContext } from '../../helpers/user-context'
 
 
-const PostView = ({page, user, selectedUser, setSelectedUser}) => {
+const PostView = ({page, setSub, user, selectedUser, setSelectedUser}) => {
 
     const [commentData, setCommentData] = useState({text:""})
     const [currComments, setCurrComments] = useState(false)
@@ -18,13 +19,15 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
     const [postVote, setPostVote] = useState({votes:null, voteType:null})
     const [postEditClicked, setPostEditClicked] = useState(false)
     const [postEditText, setPostEditText] = useState("")
+
+    const usrCtx = useContext(UserContext)
    
     useEffect(()=>{
         const getCurrPost=async(post)=>{
             let postDataCont
             postDataCont = await getPostById(post)
             setPostData(postDataCont)
-            setPostVote(voteInitializer(postDataCont.post, postVote, user))
+            setPostVote(voteInitializer(postDataCont.post, postVote, usrCtx.userId))
         }
         getCurrPost(page)
     },[])
@@ -40,21 +43,12 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
         setCommentData({...setCommentData, [e.target.name]:e.target.value })
     }   
     
-    console.log(postData)
     const handleCommentSubmit= async(e)=>{
         e.preventDefault()
         let newComment
         try{
-            let data = {...commentData, user:user.userId, username:user.username , post:page}
+            let data = {...commentData, user:usrCtx.userId, username:usrCtx.userName , post:page}
             newComment = await createComment(data)
-            // console.log([...postData.post.comments, newComment.comment._id])
-            // let postdataCopy = Object.assign({}, postData.post)
-            // postdataCopy.comments = [...postData.post.comments, newComment.comment._id]
-            // setPostData({post: postdataCopy})
-            // console.log(postData)
-            // console.log(postData)
-            // console.log(newComment)
-            // setCurrComments([...postData.post.comments, newComment.comment._id])
             createCommentArr(postData.post._id)
             setCommentData({text:""})
         }catch(err){
@@ -76,7 +70,7 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
 
     const arrowClickedHandler=async(voteType)=>{
         let voteData
-        voteData = await arrowHandler(user, voteType, {_id:page}, postVote, "post")
+        voteData = await arrowHandler(usrCtx.userId, voteType, {_id:page}, postVote, "post")
         setPostVote(voteData)
     }
 
@@ -95,15 +89,12 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
             console.log(err)
         }
 
-        console.log(editedPost)
-
         setPostData(editedPost)
         setPostEditClicked(false)
     }
 
     const deleteConfirmed=async(e)=>{
-        let deletedPost
-        deletedPost = await deletePost(postData.post._id)
+        await deletePost(postData.post._id)
     }
 
 
@@ -119,36 +110,13 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
 
         commentDiv=(
             currComments.map((comment) => {
-                return <Comment key={comment._id} thisCommentData={comment} user={user} setSelectedUser={setSelectedUser}/>
+                return <Comment key={comment._id} thisCommentData={comment} setSelectedUser={setSelectedUser}/>
             })
         )
     }else{
         createCommentArr(postData.post._id)
     }
 
-
-    let postUpArrowDiv = (
-        <div className='post-div-votes' onClick={()=>arrowClickedHandler("upVote")}>
-            <UpOutlined />
-        </div>
-    )
-
-    let postDownArrowDiv = (
-        <div className='post-div-votes' onClick={()=>arrowClickedHandler("downVote")}>
-            <DownOutlined />
-        </div>
-    )
-
-    let postOptionsDiv = (
-        <div className='post-view-options'>
-            <div>
-                Comments
-            </div>
-            <div>
-                Save
-            </div>
-        </div>
-    )
     
     let postEditDiv = (
         <form onSubmit={handlePostEditSubmit} className="post-edit-div">
@@ -159,33 +127,9 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
         </form>
     )
 
-    if(postVote.voteType==="upVote"){
-        postUpArrowDiv = (
-            <div className='post-div-votes-selected' onClick={()=>arrowClickedHandler("upVote")}>
-                <UpOutlined style={{color: 'orangered'}}/>
-            </div> 
-        )
-    }else if(postVote.voteType==="downVote"){
-        postDownArrowDiv = (
-            <div className='post-div-votes-selected' onClick={()=>arrowClickedHandler("downVote")}>
-                <DownOutlined style={{color:'blue'}}/>
-            </div> 
-        )
-    }
 
-    if(user.userId === postData.post.user){
-        postOptionsDiv = (
-        <div className='post-view-options'>
-            <div className='post-view-options-btn'>
-                <CommentOutlined />
-                <div className='comment-label'>
-                    Comments
-                </div>
-            </div>
-            <div className='post-view-options-btn'>
-                <SaveOutlined />
-                Save
-            </div>
+    let userOptionsDiv =(
+        <>
             <div className='post-view-options-btn' onClick={handlePostEditClicked}>
                 <EditOutlined />
                 Edit
@@ -195,35 +139,50 @@ const PostView = ({page, user, selectedUser, setSelectedUser}) => {
                 onConfirm={deleteConfirmed}
                 okText={"Yes"}
             >
-                <div className='post-view-options-btn' >
-                    <DeleteOutlined />
-                    Delete
-                </div>
+            <div className='post-view-options-btn' >
+                <DeleteOutlined />
+                Delete
+            </div>
             </Popconfirm>
-        </div>
-        )
-    }
+        </>
+    )
 
   return (
     <div className='post-back'>
         <div className='post-div'>
             <div className='up-down-votes'>
-                {postUpArrowDiv}
+                <div className={postVote.voteType==="upVote"?'post-div-votes-selected':"post-div-votes"} onClick={()=>arrowClickedHandler("upVote")}>
+                    <UpOutlined style={postVote.voteType==="upVote" ? {color: 'orangered'}:null}/>
+                </div> 
                 <div className='tester-div-votes'>
                     {postVote.votes}
                 </div>
-                {postDownArrowDiv}
+                <div className={postVote.voteType==="downVote" ? 'post-div-votes-selected' : "post-div-votes"} onClick={()=>arrowClickedHandler("downVote")}>
+                    <DownOutlined style={postVote.voteType==="downVote" ? {color:'blue'} : null}/>
+                </div> 
             </div>
             <div className='post-content'>
                 <div className='post-info'>
-                    <Link className='post-sub' to='/'>b/{postData.post.subName}</Link>
-                    <div className='post-user'>u/{postData.post.username}</div>
+                    <Link className='post-sub' to='/sub-view' onClick={()=>setSub(postData.post.sub)}>b/{postData.post.subName}</Link>
+                    <Link className='post-user' to="/user-profile" onClick={()=>setSelectedUser(postData.post.user)}>u/{postData.post.username}</Link>
                 </div>
                 <div className='post-media'>
                     <h3 className='post-title'>{postData.post.title}</h3>
                     {postEditClicked ? postEditDiv : <div className='post-text'>{postData.post.text}</div>}
                 </div>
-                {postOptionsDiv}
+                <div className='post-view-options'>
+                    <div className='post-view-options-btn'>
+                        <CommentOutlined />
+                        <div className='comment-label'>
+                            Comments
+                        </div>
+                    </div>
+                    <div className='post-view-options-btn'>
+                        <SaveOutlined />
+                        Save
+                    </div>
+                    {usrCtx.userId === postData.post.user ? userOptionsDiv : null}
+                </div>
             </div>
         </div>
         <div className='comments-and-form'>

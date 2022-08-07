@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import { createComment, getCommentsByParent, editComment, deleteComment } from '../../api/comments'
 import {CaretUpOutlined, CaretDownOutlined, ArrowUpOutlined, ArrowDownOutlined} from '@ant-design/icons'
 import './Comment.css'
@@ -7,6 +7,7 @@ import {message, Popconfirm } from 'antd'
 import { Link } from 'react-router-dom'
 import {voteInitializer, arrowHandler} from '../../functions/voteFunctions'
 import { toggleItemSaved } from '../../functions/toggleItemSaved'
+import { UserContext } from '../../helpers/user-context'
 
 const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
 
@@ -17,6 +18,8 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
     const [dateDiff, setDateDiff] = useState("")
     const [commentVote, setCommentVote] = useState({votes:null, voteType:null})
     const [commentSaved, setCommentSaved] = useState(false)
+
+    const usrCtx = useContext(UserContext)
 
     const getCurrComments = async()=>{
         setCurrComments(await getCommentsByParent(thisCommentData._id))
@@ -31,7 +34,7 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
     },[])
 
     useEffect(()=>{
-        setCommentVote(voteInitializer(thisCommentData, commentVote, user))
+        setCommentVote(voteInitializer(thisCommentData, commentVote, usrCtx.userId))
     },[])
 
     let replyDiv=null
@@ -44,7 +47,7 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
     const handleCommentSubmit=async(e)=>{
         e.preventDefault()
         try{
-            let data = {...commentText, user:user.userId, username: user.username, parentComment:thisCommentData._id}
+            let data = {...commentText, user:usrCtx.userId, username: usrCtx.userName, parentComment:thisCommentData._id}
             await createComment(data)
         }catch(err){
             console.log(err)
@@ -53,8 +56,7 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
 
     const arrowClickedHandler=async(voteType)=>{
         let outData
-        outData = await arrowHandler(user, voteType, thisCommentData, commentVote, "comment")
-        console.log(outData)
+        outData = await arrowHandler(usrCtx.userId, voteType, thisCommentData, commentVote, "comment")
         setCommentVote(outData)
     }
 
@@ -69,7 +71,6 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
         try{
             let editedText
             editedText= await editComment(thisCommentData._id ,commentText.text)
-            console.log(editedText)
         }catch(err){
             console.log(err)
         }
@@ -82,7 +83,7 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
 
     const commentSaveHandler=()=>{
     
-        toggleItemSaved(user.userId, thisCommentData._id, "comment", commentSaved)
+        toggleItemSaved(usrCtx.userId, thisCommentData._id, "comment", commentSaved)
         if(commentSaved){
             setCommentSaved(false)
         }else{
@@ -92,7 +93,7 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
     }
 
     if(!thisCommentData._id){
-        return(<div>LOADING</div>)
+        return <div>LOADING</div>
     }
 
     if(profileView){
@@ -107,52 +108,24 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
     if(replyClicked){
         replyDiv = (
             <form onSubmit={handleCommentSubmit} className='comment-form'>
-            <textarea rows={6} name="text" onChange={commentTextHandler} className="init-comment-TA" />
-            <div className='comment-btn-div'>
-                <button type="submit" className='text-done-btn'>Done</button>
-            </div>
-        </form>
+                <textarea rows={6} name="text" onChange={commentTextHandler} className="init-comment-TA" />
+                <div className='comment-btn-div'>
+                    <button type="submit" className='text-done-btn'>Done</button>
+                </div>
+            </form>
         )
     }
 
     if(currComments && currComments.length !== 0){
-        console.log(currComments)
         commentDiv =(
             <div className='comments-div'>
                 {currComments.map((comment) => {
-                    return <Comment thisCommentData={comment} user={user} setSelectedUser={setSelectedUser}/>
+                    return <Comment thisCommentData={comment} setSelectedUser={setSelectedUser}/>
                 })}
             </div>
         )
     }
 
-
-    let upArrowDiv=(
-        <div className='comment-vote-op' 
-            onClick={()=>arrowClickedHandler("upVote")}>
-            <ArrowUpOutlined/>
-        </div>
-    )
-
-    let downArrowDiv=(
-        <div className='comment-vote-op' onClick={()=>arrowClickedHandler("downVote")}>
-            <ArrowDownOutlined/>
-        </div>
-    )
-
-    if(commentVote.voteType==="upVote"){
-        upArrowDiv = (
-            <div className='comment-vote-selected' onClick={()=>arrowClickedHandler("upVote")}>
-                <ArrowUpOutlined style={{color: 'orangered'}}/>
-            </div> 
-        )
-    }else if(commentVote.voteType==="downVote"){
-        downArrowDiv = (
-            <div className='comment-vote-selected' onClick={()=>arrowClickedHandler("downVote")}>
-                <ArrowDownOutlined style={{color:'blue'}}/>
-            </div> 
-        )
-    }
 
     let currentUserComment = (
         <>
@@ -178,13 +151,17 @@ const Comment = ({thisCommentData, user, profileView, setSelectedUser}) => {
             <div className='comment-text'>{thisCommentData.text}</div>
             <div className='comment-options'>
                 <div className='comment-vote-btn'>
-                    {upArrowDiv}
+                    <div className={commentVote.voteType==="upVote" ?"comment-vote-selected":'comment-vote-op'} onClick={()=>arrowClickedHandler("upVote")}>
+                        <ArrowUpOutlined style={commentVote.voteType==="upVote" ? {color: 'orangered'}:null}/>
+                     </div>
                     <div>{commentVote.votes}</div>
-                    {downArrowDiv}
+                    <div className={commentVote.voteType==="downVote"?'comment-vote-selected':"comment-vote-op"} onClick={()=>arrowClickedHandler("downVote")}>
+                        <ArrowDownOutlined style={commentVote.voteType==="downVote" ? {color:'blue'}:null}/>
+                    </div> 
                 </div>
                 <div onClick={()=>setReplyClicked(true)} className="comm-option-btn">Reply</div>
                 <div className="comm-option-btn" onClick={commentSaveHandler}>Save</div>
-                {user.userId === thisCommentData.user ? currentUserComment : null}
+                {usrCtx.userId === thisCommentData.user ? currentUserComment : null}
             </div>
         </>
     )

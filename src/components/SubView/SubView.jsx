@@ -5,7 +5,7 @@ import SubBlueCard from '../SubBlueCard/SubBlueCard'
 import PostCard from '../PostCard/PostCard'
 import { getPostsBySub } from '../../api/posts'
 
-const SubView = ({sub, user, setSelectedUser, setPage}) => {
+const SubView = ({sub, setSelectedUser, setPage}) => {
 
   const [subPosts, setSubPosts] = useState()  
 
@@ -33,7 +33,7 @@ const SubView = ({sub, user, setSelectedUser, setPage}) => {
       <h3 className="sub-view-name">{subPosts[0].subName}</h3>
       <div className='sub-view-posts-div'>
         {subPosts.map((post)=>{
-          return <PostCard post={post} sub={sub} user={user} setSelectedUser={setSelectedUser} setPage={setPage}/>
+          return <PostCard post={post} sub={sub} setSelectedUser={setSelectedUser} setPage={setPage}/>
         })}
       </div>  
         <SubBlueCard selectedSub={sub}/>

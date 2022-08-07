@@ -39,18 +39,18 @@ const voteInitializer=(item, vote, user)=>{
 
     
 
-const arrowHandler=async(user, voteType, item, vote, component)=>{
+const arrowHandler=async(userId, voteType, item, vote, component)=>{
     let newVoteType
     let voteObj
     const componentCheck=async(component)=>{
         if(component === "comment"){
-            return await changeCommentVotes(user, newVoteType, item._id, vote.voteId)
+            return await changeCommentVotes(userId, newVoteType, item._id, vote.voteId)
         }else if(component === "post"){
-            return await updateVotes(user, newVoteType, item._id, vote.voteId)
+            return await updateVotes(userId, newVoteType, item._id, vote.voteId)
         }
     }
 
-    if(!user){
+    if(!userId){
         return
     }
 
@@ -63,7 +63,7 @@ const arrowHandler=async(user, voteType, item, vote, component)=>{
             newItem = await componentCheck(component)
             console.log(newItem)
             let foundVoteId = newItem.item.voteUsers.find((voteUser) => {
-                return voteUser.userVote.user === user.userId
+                return voteUser.userVote.user === userId
             })
             voteObj = {votes:tempVoteCount, voteType:"upVote", voteId:foundVoteId._id}
             return voteObj
@@ -72,7 +72,7 @@ const arrowHandler=async(user, voteType, item, vote, component)=>{
             tempVoteCount--
             newItem = await componentCheck(component)
             let foundVoteId = newItem.item.voteUsers.find((voteUser) => {
-                return voteUser.userVote.user === user.userId
+                return voteUser.userVote.user === userId
             })
             voteObj = {votes:tempVoteCount, voteType:"downVote", voteId:foundVoteId._id}
             return voteObj
