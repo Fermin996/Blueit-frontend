@@ -1,14 +1,14 @@
 import { updateVotes } from "../api/posts";
 import { changeCommentVotes } from "../api/comments";
 
-const voteInitializer=(item, vote, user)=>{
+const voteInitializer=(item, vote, userId)=>{
+
     let voteOb
 
-    if(item.voteUsers && !vote.votes && user){
-
+    if(item.voteUsers && userId){     
         let foundVote;
         foundVote = item.voteUsers.find((vote) => {
-            return vote.userVote.user === user.userId
+            return vote.userVote.user === userId
         })
 
         if(foundVote && foundVote.userVote.voteType === "downVote"){          
@@ -61,7 +61,6 @@ const arrowHandler=async(userId, voteType, item, vote, component)=>{
             newVoteType="upVote"
             tempVoteCount+=1
             newItem = await componentCheck(component)
-            console.log(newItem)
             let foundVoteId = newItem.item.voteUsers.find((voteUser) => {
                 return voteUser.userVote.user === userId
             })

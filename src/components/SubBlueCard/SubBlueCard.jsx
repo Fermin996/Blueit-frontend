@@ -7,16 +7,6 @@ import './SubBlueCard.css'
 const SubBlueCard = (props) => {
     
     const [currentSub, setCurrSub] = useState(null)
-    // const [subId, setSubId] = useState(null)
-    // console.log(props.selectedSub)
-  
-    // if(props.sub){
-    //   let cont = props.sub
-
-    //   setSubId(cont)
-    // }else{
-    //   setSubId(props.selectedSub)
-    // }
     
   const getSubCard=async()=>{
     let subCont
@@ -41,9 +31,6 @@ const SubBlueCard = (props) => {
 
   },[props.selectedSub])
   
-//   if(props.selectedSub){
-//       currentSub = props.selectedSub.sub
-//   }
 
   function numToString(num) {
     let frontNum;
@@ -90,9 +77,9 @@ const SubBlueCard = (props) => {
         </div>
         <div className='sub-rules-div'>
             <div className='sub-card-title'>b/{currentSub.subName} Rules</div>
-            {/* {currentSub.rules.map((rule) => {
-                return <div className='sub-rule'>{currentSub.rules.indexOf(rule)+1}. {rule}</div>
-            })} */}
+            {currentSub.rules.map((rule) => {
+                return <div className='sub-rule'>{currentSub.rules.indexOf(rule)+1}. {rule.text}</div>
+            })}
         </div>
         </div>
     )

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './CreatePost.css'
 import SubBlueCard from '../SubBlueCard/SubBlueCard'
@@ -6,15 +6,18 @@ import{ createPost }from '../../api/posts'
 import { getSubs, getSubById } from '../../api/subs'
 import "antd/dist/antd.css"
 import { Cascader } from 'antd'
-import { useEffect } from 'react'
+import { UserContext } from '../../helpers/user-context'
+
+
 const CreatePost = (props) => {
 
   const navigate = useNavigate()
 
+  const userCtx = useContext(UserContext)
+
   const [selectedSub, setSelectedSub] = useState(null)
   const [formData, setFormData] = useState({})
   const [options, setOptions] = useState(null)
-  const [droppedMenuTrue, setDroppedMenuTrue] = useState(false)
   const [selectedSubName, setSelectedSubName] = useState()
 
   const dropHandler=async()=>{
@@ -49,9 +52,7 @@ const CreatePost = (props) => {
     let createdPost
     e.preventDefault()
     try{
-      console.log(props.user)
-      createdPost = await createPost({...formData, user:props.user.userId, username:props.user.username, sub:selectedSub[0], subName:selectedSubName})
-      console.log(createdPost)
+      createdPost = await createPost({...formData, user:userCtx.userId, username:userCtx.userName, sub:selectedSub[0], subName:selectedSubName})
       props.setPage(createdPost.post._id)
       navigate('/post-view')
     }catch(err){
@@ -60,20 +61,8 @@ const CreatePost = (props) => {
 
   }
 
-  // const handleSubSelected=async(subId)=>{
-  //   let currSub
-  
-  //   try{
-  //     currSub = await getSubById(subId)
-  //     setSelectedSub(currSub)
-  //   }catch(err){
-  //     console.log(err)
-  //   }
-
-  // }
 
   let subData 
-  let dropMenu = null
 
 
   const dropChangeHandler=(value)=>{
@@ -81,14 +70,6 @@ const CreatePost = (props) => {
       setSelectedSub(value)
     }
   }
-
-  // if(selectedSub){
-  //   selectedSubName = selectedSub.sub.subName
-  //   selectedSubId = selectedSub.sub._id
-  // }else{
-  //   selectedSubName = false
-  //   selectedSubId = false
-  // }
 
 
   return (

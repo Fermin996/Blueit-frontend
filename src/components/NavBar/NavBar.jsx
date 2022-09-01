@@ -1,11 +1,12 @@
 import React, {useState} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { searchPost } from '../../api/posts'
 import searchImg from "../../search.png" 
 import { UserOutlined } from '@ant-design/icons'
 import './NavBar.css'
 
 const NavBar = props => {
+  const navigate = useNavigate()
   const [searchText, setSearchText] = useState("")
     
   function logoutHandler(){
@@ -15,25 +16,25 @@ const NavBar = props => {
 
   const handleSearchInput=(e)=>{
     setSearchText(e.target.value)
-    console.log(searchText)
   }
 
   const handleSearchSubmit=async(e)=>{
     e.preventDefault()
 
 
+    let searchResults
     try{
-        let searchResults
         searchResults = await searchPost(searchText)
     }catch(err){
         console.log(err)
     }
 
+    props.setCurrPosts({page:[...searchResults]})
+
+    navigate("/search-results")
+
   }
 
-  const userProfButtonHandler=()=>{
-    // console.log(props.user)
-  }
 
   let notLoggedNav = (
         <div className='nav-buttons'>
@@ -48,7 +49,7 @@ const NavBar = props => {
 
   let loggedNav = (
     <div className='logged-nav'>
-      <Link to="/my-profile" className='user-profile-btn' onClick={userProfButtonHandler}>
+      <Link to="/my-profile" className='user-profile-btn'>
         <UserOutlined style={{fontSize:"20px"}} />
       </Link>
       <div onClick={logoutHandler} className='logout-btn'>Logout</div>

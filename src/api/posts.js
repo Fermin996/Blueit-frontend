@@ -1,7 +1,7 @@
 
 const getPosts= async(sortBy, start)=>{
     try{
-        const response = await fetch('http://localhost:5000/posts/sort/'+sortBy+"/"+start, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/sort/'+sortBy+"/"+start, {
             method: "GET"
         })
 
@@ -12,9 +12,9 @@ const getPosts= async(sortBy, start)=>{
 
 }   
 
-const searchPost= async(string)=>{
+const searchPost=async(string)=>{
     try{
-        const response = await fetch('http://localhost:5000/posts/search/'+string, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/search/'+string, {
             method: "GET"
         })
         return await response.json()
@@ -24,9 +24,8 @@ const searchPost= async(string)=>{
 }
 
 const createPost = async(post) =>{
-    console.log(post)
     try{
-        const response = await fetch('http://localhost:5000/posts/', {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/', {
             method: "POST",
             headers:{
                 //Authorization: "Bearer " + token,
@@ -48,7 +47,7 @@ const createPost = async(post) =>{
 const getPostById =async(postId)=>{
 
     try{
-        const response = await fetch('http://localhost:5000/posts/'+postId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/'+postId, {
             method:"GET"
         })
         return await response.json()
@@ -60,7 +59,7 @@ const getPostById =async(postId)=>{
 
 const getPostsBySub=async(subId)=>{
     try{
-        const response = await fetch('http://localhost:5000/posts/sub/'+subId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/sub/'+subId, {
             method:"GET"
         })
         return await response.json()
@@ -71,7 +70,7 @@ const getPostsBySub=async(subId)=>{
 
 const getPostsByUser=async(userId)=>{
     try{
-        const response = await fetch('http://localhost:5000/posts/user/'+userId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/user/'+userId, {
             method:"GET"
         })
 
@@ -82,9 +81,8 @@ const getPostsByUser=async(userId)=>{
 }
 
 const updateVotes=async(userId, voteType, postId, voteId)=>{
-    console.log("am i even connected")
     try{
-        const response = await fetch('http://localhost:5000/posts/votes/'+postId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/votes/'+postId, {
             method: "PATCH",
             headers: {
                 Accept: "application/json",
@@ -99,9 +97,8 @@ const updateVotes=async(userId, voteType, postId, voteId)=>{
 }
 
 const editPost=async(postId, postText)=>{
-    console.log(postId)
     try{
-        const response = await fetch('http://localhost:5000/posts/'+postId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/'+postId, {
             method: "PATCH",
             headers:{
                 Accept: "application/json",
@@ -118,7 +115,7 @@ const editPost=async(postId, postText)=>{
 
 const deletePost=async(postId)=>{
     try{
-        const response = await fetch('http://localhost:5000/posts/'+postId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/posts/'+postId, {
             method: "DELETE"
         })
         return response.json()

@@ -5,13 +5,16 @@ import { getPosts, getPostsBySub } from '../../api/posts';
 import { FireOutlined, StarOutlined, CheckSquareOutlined, UpOutlined } from '@ant-design/icons';
 import PostCard from '../PostCard/PostCard';
 import CommunitiesCard from './CommunitiesCard/CommunitiesCard';
+import usePrevious from '../../helpers/use-previous';
 
-const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, user, setSub, setUser}) => {
+const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, setSub}) => {
 
     
     const [offset, setOffset] = useState(0)
-    const [checkSort, setCheckSort] = useState("date")
     const [sortMethod, setSortMethod] = useState("date")
+    const [isLoading, setIsLoading] = useState(false)
+
+    const prevSortMethod = usePrevious(sortMethod)
 
     const currPostRef = useRef()
     currPostRef.current = currPosts
@@ -19,20 +22,20 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
     const offsetRef = useRef()
     offsetRef.current=offset
 
-    
     const callGetPost = async()=>{
-
+        setIsLoading(true)
         let currPostCont = currPostRef.current
+        let effectiveOffset = offset
 
-        if( sortMethod!==checkSort && currPosts.page.length !== 0){
+        if( sortMethod!==prevSortMethod && currPosts.page.length !== 0){
             setOffset(0)
-            setCheckSort(sortMethod)
+            effectiveOffset = 0
             currPostCont = {page:[]}
             setCurrPosts({page:[]})
         }
 
         try{
-            let postArr = await getPosts(sortMethod, offset)
+            let postArr = await getPosts(sortMethod, effectiveOffset)
             if( !currPostCont.page[0] || !currPostRef.current.page[0] || currPostRef.current.page[0]._id === postArr.page[0]._id){
                 setCurrPosts( 
                     {
@@ -50,12 +53,15 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
         }catch(err){
             console.log(err)
         }
+
+        setIsLoading(false)
     }
 
     const handleScroll=(e)=>{
-        if(window.innerHeight + e.target.documentElement.scrollTop >= e.target.documentElement.scrollHeight ){
+        if(window.innerHeight + e.target.documentElement.scrollTop >= e.target.documentElement.scrollHeight-50 && !isLoading ){
             setOffset(offsetRef.current+4)
         }
+
     }
 
     useEffect(()=>{
@@ -63,7 +69,7 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
     },[]) 
 
     useEffect(()=>{
-        if(page === "home"){
+        if(page === "home" && !isLoading){
             callGetPost()
         }
    },[page, sortMethod, offset])    
@@ -97,7 +103,7 @@ const PostsPage = ({currPosts, setCurrPosts, page, setPage, setSelectedUser, use
                     <PostCard 
                         setPage={setPage} post={post}
                         setSelectedUser={setSelectedUser} 
-                        key={post._id} setSub={setSub} setUser={setUser}
+                        key={post._id} setSub={setSub}
                         />
                 )
             })}

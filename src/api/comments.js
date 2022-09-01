@@ -1,7 +1,7 @@
 const getCommentsByParent = async(parentId)=>{
 
     try{
-        const response = await fetch('http://localhost:5000/comments/parent/'+parentId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+"/comments/parent/"+parentId, {
             method: "GET"
         })
 
@@ -14,7 +14,7 @@ const getCommentsByParent = async(parentId)=>{
 
 const getCommentById = async(commentId)=>{
     try{
-        const response = await fetch('http://localhost:5000/comments/'+commentId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/comments/'+commentId, {
             method: "GET"
         })
 
@@ -29,7 +29,7 @@ const getCommentById = async(commentId)=>{
 const getCommentsByPost = async(postId)=>{
 
     try{
-        const response = await fetch('http://localhost:5000/comments/post/'+postId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/comments/post/'+postId, {
             method: "GET"
         })
 
@@ -43,7 +43,7 @@ const getCommentsByPost = async(postId)=>{
 const createComment = async(commentData)=>{
 
     try{
-        const response = await fetch('http://localhost:5000/comments/', {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/comments/', {
             method:"POST",
             headers:{
                 //Authorization: "Bearer " + token,
@@ -63,7 +63,7 @@ const createComment = async(commentData)=>{
 
 const getCommentsByUser=async(userId)=>{
     try{
-        const response= await fetch('http://localhost:5000/comments/user/'+userId, {
+        const response= await fetch(process.env.REACT_APP_BACKEND_URL+'/comments/user/'+userId, {
             method:"GET"
         })
 
@@ -76,7 +76,7 @@ const getCommentsByUser=async(userId)=>{
 const changeCommentVotes=async(userId, voteType, commentId, voteId)=>{
 
     try{
-        const response = await fetch('http://localhost:5000/comments/votes/'+commentId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/comments/votes/'+commentId, {
             method:"PATCH",
             headers: {
                 Accept: "application/json",
@@ -93,9 +93,9 @@ const changeCommentVotes=async(userId, voteType, commentId, voteId)=>{
 }
 
 const editComment=async(commentId, text)=>{
-    console.log(commentId)
+
     try{
-        const response = await fetch('http://localhost:5000/comments/'+commentId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/comments/'+commentId, {
             method:"PATCH",
             headers: {
                 Accept: "application/json",
@@ -112,7 +112,7 @@ const editComment=async(commentId, text)=>{
 
 const deleteComment=async(commentId)=>{
     try{
-        const response = await fetch('http://localhost:5000/comments/'+commentId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/comments/'+commentId, {
             method:"DELETE"
         })
         return response.json()

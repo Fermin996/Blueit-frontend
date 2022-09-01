@@ -7,7 +7,7 @@ import { voteInitializer, arrowHandler } from '../../functions/voteFunctions'
 import { toggleItemSaved } from '../../functions/toggleItemSaved'
 import { UserContext } from '../../helpers/user-context'
 
-const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
+const PostCard = ({setPage, post, setSelectedUser, setSub}) => {
 
     const [vote, setVote] = useState({votes:null, voteType:null})
     const [dateDiff, setDateDiff] = useState("")
@@ -23,7 +23,7 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
                 return p.post === post._id
             })
         }
-
+        
         setPostIsSaved(!!savedPostFound)
         setDateDiff(timeCheck(post.date))
         setVote(voteInitializer(post, vote, usrCtx.userId))
@@ -31,12 +31,6 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
     
     const postSaveClickedHandler=async()=>{
         let updatedUser = await toggleItemSaved(usrCtx.userId, post._id, "post", postIsSaved)
-        
-        // setUser({
-        //     userId:updatedUser.user.id,
-        //     username:updatedUser.user.username,
-        //     saved:updatedUser.user.saved
-        // })
 
         usrCtx.setUser({
             userId:updatedUser.user.id,
@@ -58,7 +52,7 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
         voteData = await arrowHandler(usrCtx.userId, voteType, post, vote, "post")
         setVote(voteData)
     }
-    
+
   return (
     <div className='post-div'>
         <div className='post-votes-div'>
@@ -74,7 +68,7 @@ const PostCard = ({setPage, post, setSelectedUser, setSub, user, setUser}) => {
             <div className='posts-votes-sub-div'>
                 <div className={vote.voteType==="downVote" ?'arrow-container-selected' : 'arrow-container'} 
                     onClick={()=>arrowClickedHandler("downVote")}>
-                    <DownOutlined style={vote.voteType==="downVote" ? {color:'alice  blue'}: null}/>
+                    <DownOutlined style={vote.voteType==="downVote" ? {color:'blue'}: null}/>
                 </div> 
             </div>
         </div>

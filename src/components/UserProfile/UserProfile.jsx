@@ -73,7 +73,7 @@ const UserProfile = (props) => {
       let commentItem
 
       commentItem = await getCommentById(data.savedComments[y].comment)
-      console.log(commentItem)
+      
       for(let z=startIndex; z<=itemArr.length; z++){
 
         let itemDate;

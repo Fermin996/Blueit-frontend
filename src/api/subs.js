@@ -1,7 +1,7 @@
 const getSubs = async()=>{
 
     try{
-        const response = await fetch('http://localhost:5000/sub/', {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/sub/', {
             method: "GET"
         })
 
@@ -14,7 +14,7 @@ const getSubs = async()=>{
 const getSubById = async(subId)=>{
 
     try{
-        const response = await fetch('http://localhost:5000/sub/'+subId,{
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+'/sub/'+subId,{
             method: "GET"
         })
 

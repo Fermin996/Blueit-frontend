@@ -6,10 +6,9 @@ const signUp = async (user) => {
         userCont = {email:false, password:false, username:false}
     }
 
-    console.log(userCont)
 
     try{
-        const resp = await fetch("http://localhost:5000/user/signup", {
+        const resp = await fetch(process.env.REACT_APP_BACKEND_URL+"/user/signup", {
         method: "POST",
         headers: { 
             Accept: "application/json",
@@ -34,7 +33,7 @@ const login = async (user) =>{
     }
 
     try{
-        const response = await fetch("http://localhost:5000/user/login", {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+"/user/login", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json"
@@ -53,9 +52,8 @@ const login = async (user) =>{
 }
 
 const getUser = async(userId) =>{
-    console.log(userId)
     try {
-        const response = await fetch("http://localhost:5000/user/"+userId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+"/user/"+userId, {
             method: "GET"
         })
         return await response.json()
@@ -66,7 +64,7 @@ const getUser = async(userId) =>{
 
 const getSavedItems = async(userId) =>{
     try {
-        const response = await fetch("http://localhost:5000/user/save/"+userId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+"/user/save/"+userId, {
             method: "GET"
         })
         return await response.json()
@@ -77,9 +75,8 @@ const getSavedItems = async(userId) =>{
 
 
 const saveItem = async(userId, itemId, type)=>{
-    console.log(userId)
     try{
-        const response = await fetch("http://localhost:5000/user/save/"+userId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+"/user/save/"+userId, {
             method:"PATCH",
             headers: {
                 Accept: "application/json",
@@ -98,7 +95,7 @@ const saveItem = async(userId, itemId, type)=>{
 const deleteItem = async(userId, itemId, type)=>{
 
     try{
-        const response = await fetch("http://localhost:5000/user/delete-saved/"+userId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+"/user/delete-saved/"+userId, {
             method: "PATCH",
             headers: {
                 Accept: "application/json",
@@ -116,11 +113,8 @@ const deleteItem = async(userId, itemId, type)=>{
 
 const editUserBio= async(bioText, userId)=>{
 
-    console.log(bioText)
-    console.log(userId)
-
     try{
-        const response = await fetch("http://localhost:5000/user/bio-edit/"+userId, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL+"/user/bio-edit/"+userId, {
             method: "PATCH",
             headers:{
                 Accept:"application/json",

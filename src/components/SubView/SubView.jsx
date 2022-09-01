@@ -27,7 +27,7 @@ const SubView = ({sub, setSelectedUser, setPage}) => {
   if(!subPosts){
       return <div>...Loading</div>
   }
-  console.log(subPosts)
+  
   return (
     <div className='sub-view-back'>
       <h3 className="sub-view-name">{subPosts[0].subName}</h3>

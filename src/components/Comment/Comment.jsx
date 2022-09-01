@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react'
 import { createComment, getCommentsByParent, editComment, deleteComment } from '../../api/comments'
-import {CaretUpOutlined, CaretDownOutlined, ArrowUpOutlined, ArrowDownOutlined} from '@ant-design/icons'
+import { ArrowUpOutlined, ArrowDownOutlined} from '@ant-design/icons'
 import './Comment.css'
 import { timeCheck } from '../../functions/timeCheck'
 import {message, Popconfirm } from 'antd'

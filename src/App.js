@@ -8,7 +8,6 @@ import Login from './components/Login/Login';
 import PostView from './components/PostView/PostView';
 import UserProfile from './components/UserProfile/UserProfile';
 import SearchResults from './components/SearchResults/SearchResults';
-import { getPosts } from './api/posts';
 import { login, getSavedItems } from './api/users';
 import SubView from './components/SubView/SubView';
 import { UserContext } from './helpers/user-context';
@@ -29,7 +28,7 @@ function App() {
     let savedItems
     data=await login(inData)
     savedItems=await getSavedItems(inData.userId)
-    console.log(savedItems)
+    
     if(data){
       setToken(data.token)
       setUser({userId: inData.userId, username: data.userName, saved: savedItems})
@@ -76,7 +75,7 @@ function App() {
         <Route path='/user-profile' element={<UserProfile selectedUser={selectedUser} setSelectedUser={setSelectedUser} setPage={setPage}/>} />
         <Route path='/my-profile' element={<UserProfile selectedUser={user.userId}  setPage={setPage} isUserProf={true}/>} />
         <Route path='/sub-view' element={<SubView sub={sub} setSelectedUser={setSelectedUser} setPage={setPage} />}/> 
-        <Route path='/search-results' element={<SearchResults  />} />
+        <Route path='/search-results' element={<SearchResults setSub={setSub} setSelectedUser={setSelectedUser} setPage={setPage} currPosts={currPosts} />} />
       </Routes>
       </div>
     </UserContext.Provider>

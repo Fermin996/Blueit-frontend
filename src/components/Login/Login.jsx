@@ -12,7 +12,6 @@ const Login = ({setToken, setUser, isLogin, setIsLogin}) => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState("")
   const [inputErrors, setInputErrors] = useState({email:false, username:false, password: false})
-  // const [isLogin, setIsLogin] = useState(true)
   const handleLoginChange=(e)=>{
 
     e.preventDefault()
@@ -24,8 +23,6 @@ const Login = ({setToken, setUser, isLogin, setIsLogin}) => {
     e.preventDefault()  
     let data;
     if(!isLogin){
-      console.log("Tis me")
-      console.log(formData)
       data = await signUp(formData)
     }else{
       data= await login(formData)
@@ -34,7 +31,6 @@ const Login = ({setToken, setUser, isLogin, setIsLogin}) => {
     
     
     if(data && !data.errors){
-      console.log("does if data run")
       localStorage.setItem(
         'user',
         JSON.stringify(data)
@@ -44,7 +40,6 @@ const Login = ({setToken, setUser, isLogin, setIsLogin}) => {
       navigate("/")  
 
     }else if(!data.isValid){
-      console.log("Psych it was else")
       setInputErrors(data.errors)
     }
 
