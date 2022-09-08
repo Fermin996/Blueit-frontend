@@ -6,7 +6,7 @@ my full stack skills by using a more integrated database than I previously have.
 
 Deployed at: https://blueitt-aef98.web.app/
 
-https://recordit.co/m1cNF4YCMl.gif
+http://g.recordit.co/m1cNF4YCMl.gif
 
 ## Features
 * Create, vote, and save posts.
